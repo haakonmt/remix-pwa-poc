@@ -2,6 +2,8 @@ node_modules
 
 /.idea
 /.cache
+/.node-persist
 /build
 /public/build
+/public/entry.worker.js
 .env

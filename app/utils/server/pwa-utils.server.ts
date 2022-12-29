@@ -1,5 +1,7 @@
-const storage = require("node-persist");
-const webPush = require("web-push");
+import storage from "node-persist";
+import webPush from "web-push";
+
+import { env } from "~/environment.server";
 
 interface PushObject {
   title: string;
@@ -23,7 +25,7 @@ export async function saveSubscription(sub: PushSubscription): Promise<void> {
  * @param {number} delay - The delay in milliseconds before the text is copied (defaults to 0)
  */
 export async function pushNotification(content: PushObject, delay: number = 0) {
-  if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
+  if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) {
     console.log(
       "You must set the VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY " +
         "environment variables. You can use the following ones:",
@@ -34,8 +36,8 @@ export async function pushNotification(content: PushObject, delay: number = 0) {
 
   webPush.setVapidDetails(
     "https://serviceworke.rs/",
-    process.env.VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY,
+    env.VAPID_PUBLIC_KEY,
+    env.VAPID_PRIVATE_KEY,
   );
 
   await storage.init();

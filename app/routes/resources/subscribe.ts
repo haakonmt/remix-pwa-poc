@@ -1,11 +1,12 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 
+import webPush from "web-push";
+
+import { env } from "~/environment.server";
 import {
   pushNotification,
   saveSubscription,
 } from "~/utils/server/pwa-utils.server";
-
-const webPush = require("web-push");
 
 export const action: ActionFunction = async ({ request }) => {
   const data = await request.json();
@@ -17,7 +18,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const loader: LoaderFunction = async () => {
-  if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
+  if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) {
     console.log(
       "You must set the VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY " +
         "environment variables. You can use the following ones:",
@@ -26,9 +27,7 @@ export const loader: LoaderFunction = async () => {
     return null;
   }
 
-  const publicKey = process.env.VAPID_PUBLIC_KEY;
-
-  return new Response(publicKey, {
+  return new Response(env.VAPID_PUBLIC_KEY, {
     status: 202,
     statusText: "Successful Operation",
   });

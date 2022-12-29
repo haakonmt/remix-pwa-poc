@@ -6,7 +6,7 @@ declare global {
 
   type WakeLockEventType = "release";
 
-  interface WakeLockSentinel<T extends WakeLockType> {
+  interface WakeLockSentinel<T extends WakeLockType = "screen"> {
     readonly released: boolean;
     readonly type: T;
 

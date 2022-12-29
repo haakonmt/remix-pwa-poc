@@ -13,10 +13,10 @@
  * and error-checking method.
  */
 
-interface ResponseObject {
+export type ResponseObject<T = {}> = T & {
   status: "success" | "bad";
   message: string;
-}
+};
 
 // Clipboard Copy API
 
@@ -86,7 +86,11 @@ export async function checkConnectivity(
  *
  * @return {Promise<ResponseObject>} An object consisting of two properties: A status to indicate the status of the invocation and also an accompanying message.
  */
-export async function wakeLock(): Promise<ResponseObject> {
+export async function requestWakeLock(): Promise<
+  ResponseObject<{
+    wakeLock?: WakeLockSentinel;
+  }>
+> {
   try {
     if ("wakeLock" in navigator) {
       // This is an experimental feature!
@@ -96,6 +100,7 @@ export async function wakeLock(): Promise<ResponseObject> {
         return {
           status: "success",
           message: "WakeLock activated!",
+          wakeLock: await wakelock,
         };
       } else {
         return {

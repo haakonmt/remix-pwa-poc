@@ -1,6 +1,6 @@
-import React from 'react';
-import { useLocation, useMatches } from '@remix-run/react';
+import React from "react";
 import type { MetaFunction } from "@remix-run/node";
+import { useLocation, useMatches } from "@remix-run/react";
 import {
   Links,
   LiveReload,
@@ -46,7 +46,7 @@ export default function App() {
         return () => {
           navigator.serviceWorker.removeEventListener(
             "controllerchange",
-            listener
+            listener,
           );
         };
       }
@@ -55,15 +55,12 @@ export default function App() {
 
   return (
     <html lang="en">
-       
       <head>
-         
-        <Meta /> <Links /> 
-      </head> 
+        <Meta /> <Links />
+      </head>
       <body>
-         
-        <Outlet /> <ScrollRestoration /> <Scripts /> <LiveReload /> 
-      </body> 
+        <Outlet /> <ScrollRestoration /> <Scripts /> <LiveReload />
+      </body>
     </html>
   );
 }

@@ -1,8 +1,6 @@
-/// <reference lib="WebWorker" />
-
-import { json } from "@remix-run/server-runtime";
 import type { AssetsManifest } from "@remix-run/react/dist/entry";
 import type { EntryRoute } from "@remix-run/react/dist/routes";
+import { json } from "@remix-run/server-runtime";
 
 export type {};
 declare let self: ServiceWorkerGlobalScope;
@@ -150,7 +148,10 @@ async function handleFetch(event: FetchEvent): Promise<Response> {
       await cache.put(event.request, response.clone());
       return response;
     } catch (error) {
-      debug("Serving data from network failed, falling back to cache", url.pathname + url.search);
+      debug(
+        "Serving data from network failed, falling back to cache",
+        url.pathname + url.search,
+      );
       const response = await caches.match(event.request);
       if (response) {
         response.headers.set("X-Remix-Worker", "yes");
@@ -177,7 +178,10 @@ async function handleFetch(event: FetchEvent): Promise<Response> {
           return response;
         })
         .catch(async (error) => {
-          console.debug("Serving document from network failed, falling back to cache", url.pathname);
+          console.debug(
+            "Serving document from network failed, falling back to cache",
+            url.pathname,
+          );
           const response = await caches.match(event.request);
           if (!response) {
             throw error;
@@ -190,7 +194,7 @@ async function handleFetch(event: FetchEvent): Promise<Response> {
   return fetch(event.request.clone());
 }
 
-const handlePush = (event: PushEvent) => {
+function handlePush(event: PushEvent) {
   const data = JSON.parse(event?.data!.text());
   const title = data.title ? data.title : "Remix PWA";
 
@@ -203,17 +207,20 @@ const handlePush = (event: PushEvent) => {
     silent: data.silent ? data.silent : false,
   };
 
-  self.registration.showNotification(title, {
+  return self.registration.showNotification(title, {
     ...options,
   });
-};
+}
 
 function isMethod(request: Request, methods: string[]) {
   return methods.includes(request.method.toLowerCase());
 }
 
 function isAssetRequest(request: Request) {
-  return isMethod(request, ["get"]) && STATIC_ASSETS.some((publicPath) => request.url.startsWith(publicPath));
+  return (
+    isMethod(request, ["get"]) &&
+    STATIC_ASSETS.some((publicPath) => request.url.startsWith(publicPath))
+  );
 }
 
 function isLoaderRequest(request: Request) {
@@ -251,7 +258,9 @@ self.addEventListener("push", (event) => {
 self.addEventListener("fetch", (event) => {
   event.respondWith(
     (async () => {
-      const result = {} as { error: unknown; response: Response } | { error: undefined; response: Response };
+      const result = {} as
+        | { error: unknown; response: Response }
+        | { error: undefined; response: Response };
       try {
         result.response = await handleFetch(event);
       } catch (error) {
@@ -265,7 +274,12 @@ self.addEventListener("fetch", (event) => {
 
 async function appHandleFetch(
   event: FetchEvent,
-  { error, response }: { error: unknown; response: Response } | { error: undefined; response: Response },
+  {
+    error,
+    response,
+  }:
+    | { error: unknown; response: Response }
+    | { error: undefined; response: Response },
 ): Promise<Response> {
   return response;
 }

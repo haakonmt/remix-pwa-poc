@@ -1,5 +1,9 @@
-import { PushNotification, SaveSubscription } from "../../utils/server/pwa-utils.server";
-import type { LoaderFunction, ActionFunction } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+
+import {
+  pushNotification,
+  saveSubscription,
+} from "~/utils/server/pwa-utils.server";
 
 const webPush = require("web-push");
 
@@ -7,7 +11,7 @@ export const action: ActionFunction = async ({ request }) => {
   const data = await request.json();
   const subscription = data.subscription;
 
-  SaveSubscription(subscription);
+  saveSubscription(subscription);
 
   return { message: "Done" };
 };

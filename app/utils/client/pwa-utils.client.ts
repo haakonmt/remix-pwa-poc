@@ -91,8 +91,7 @@ export async function wakeLock(): Promise<ResponseObject> {
     if ("wakeLock" in navigator) {
       // This is an experimental feature!
 
-      //@ts-ignore
-      const wakelock = navigator.wakeLock.request("screen");
+      const wakelock = navigator.wakeLock?.request("screen");
       if (wakelock) {
         return {
           status: "success",
@@ -126,9 +125,7 @@ export async function wakeLock(): Promise<ResponseObject> {
  */
 export async function addBadge(numberCount: number): Promise<ResponseObject> {
   try {
-    //@ts-ignore
     if (navigator.setAppBadge) {
-      //@ts-ignore
       await navigator.setAppBadge(numberCount);
       return {
         status: "success",
@@ -155,9 +152,7 @@ export async function addBadge(numberCount: number): Promise<ResponseObject> {
  */
 export async function removeBadge(): Promise<ResponseObject> {
   try {
-    //@ts-ignore
     if (navigator.clearAppBadge) {
-      //@ts-ignore
       await navigator.clearAppBadge();
       return {
         status: "success",
@@ -185,7 +180,7 @@ export async function removeBadge(): Promise<ResponseObject> {
 export async function enableFullScreenMode(): Promise<ResponseObject> {
   try {
     if (document.fullscreenEnabled) {
-      document.documentElement.requestFullscreen();
+      await document.documentElement.requestFullscreen();
       return {
         status: "success",
         message: "Fullscreen mode activated",
@@ -212,7 +207,7 @@ export async function enableFullScreenMode(): Promise<ResponseObject> {
 export async function exitFullscreenMode(): Promise<ResponseObject> {
   try {
     if (document.exitFullscreen) {
-      document.exitFullscreen();
+      await document.exitFullscreen();
       return {
         status: "success",
         message: "Fullscreen mode deactivated",
@@ -266,13 +261,12 @@ export async function sendNotification(
         });
 
       if (permissions === "granted") {
-        await navigator.serviceWorker.ready.then((registration) => {
-          registration.showNotification(title, options);
-          return {
-            status: "success",
-            message: "Sent Notification to user successfully",
-          };
-        });
+        const registration = await navigator.serviceWorker.ready;
+        await registration.showNotification(title, options);
+        return {
+          status: "success",
+          message: "Sent Notification to user successfully",
+        };
       } else {
         return {
           status: "bad",
@@ -374,7 +368,7 @@ export async function copyImage(url: string): Promise<ResponseObject> {
  * @param {any} data - The data to be shared.
  * @return {Promise<ResponseObject>} An object consisting of two properties: A status to indicate the status of the invocation and also an accompanying message.
  */
-export async function WebShare(data: any): Promise<ResponseObject> {
+export async function webShare(data: any): Promise<ResponseObject> {
   try {
     if (navigator.share && navigator.canShare(data)) {
       await navigator.share(data);
@@ -403,7 +397,7 @@ export async function WebShare(data: any): Promise<ResponseObject> {
  * @param {string} text - An accompanying text alongside the header.
  * @return {Promise<ResponseObject>} An object consisting of two properties: A status to indicate the status of the invocation and also an accompanying message.
  */
-export async function WebShareLink(
+export async function webShareLink(
   url: string,
   title: string,
   text: string,

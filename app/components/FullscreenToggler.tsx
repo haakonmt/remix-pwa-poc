@@ -1,23 +1,18 @@
-import { useEffect, useState } from "react";
-
 import {
   enableFullScreenMode,
   exitFullscreenMode,
 } from "~/utils/client/pwa-utils.client";
 
 export const FullscreenToggler = () => {
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-  useEffect(() => {
-    if (isFullscreen) {
-      enableFullScreenMode();
-    } else {
-      exitFullscreenMode();
-    }
-  }, [isFullscreen]);
-
   return (
-    <button onClick={() => setIsFullscreen((prev) => !prev)}>
+    <button
+      onClick={() => {
+        const toggler = document.fullscreenElement
+          ? exitFullscreenMode
+          : enableFullScreenMode;
+        return toggler();
+      }}
+    >
       Toggle full screen
     </button>
   );

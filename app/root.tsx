@@ -56,7 +56,9 @@ export default function App() {
   return (
     <html lang="en">
       <head>
-        <Meta /> <Links />
+        <Meta />
+        <link rel="manifest" href="/resources/manifest.webmanifest" />
+        <Links />
       </head>
       <body>
         <Outlet /> <ScrollRestoration /> <Scripts /> <LiveReload />

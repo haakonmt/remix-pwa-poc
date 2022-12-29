@@ -252,20 +252,17 @@ export async function sendNotification(
 ): Promise<ResponseObject> {
   try {
     if ("Notification" in window) {
-      const permissions = await (
-        await navigator.permissions.query({ name: "notifications" })
-      ).state;
-      navigator.permissions
-        .query({ name: "notifications" })
-        .then((permissionStatus) => {
-          if (permissionStatus.state === "granted") {
-            return;
-          } else {
-            return Notification.requestPermission();
-          }
-        });
+      const { state } = await navigator.permissions.query({
+        name: "notifications",
+      });
 
-      if (permissions === "granted") {
+      let isGranted = state === "granted";
+      if (state === "prompt") {
+        const res = await Notification.requestPermission();
+        isGranted = res === "granted";
+      }
+
+      if (isGranted) {
         const registration = await navigator.serviceWorker.ready;
         await registration.showNotification(title, options);
         return {
